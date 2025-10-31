@@ -1,76 +1,175 @@
-## Language: TypeScript
 ---
-description: 'Brief description of the instruction purpose and scope'
-applyTo: '*.ts'
+description: 'Guidelines for writing high-quality, maintainable TypeScript code with best practices for logging, error handling, code organization, naming, formatting, and style.'
+applyTo: '**/*.ts, **/*.tsx'
 ---
-### Project Style (clinicalView)
-- Use named exports (no default)
-- Prefer small pure functions; pass `logger: Logger` explicitly rather than using globals.
 
-### JSON Schema Pattern
-- Define schemas with `as const satisfies JSONSchema`
-- Export corresponding types using `FromSchema<typeof schema>` right after the schema object.
-- Reuse existing element schemas instead of inlining duplicates.
+# TypeScript Development Guidelines
 
-### Coding / Mapping Conventions
-- Reuse mapping constants for code/display pairs (e.g. prescription type, performer site, status maps); do not hardcode strings already present.
-- For UUIDs use `randomUUID()` from `crypto`
-- When adding new status or code systems, centralize enums in a schema file under `src/schema/` and update maps in `fhirMaps.ts`.
+This document provides instructions for generating, reviewing, and maintaining TypeScript code. It is designed to guide Copilot and developers in producing domain-specific, robust, and maintainable code across a variety of TypeScript projects.
+
+## General Instructions
+
+- Use modern TypeScript features and syntax.
+- Prefer explicit types and interfaces for clarity and safety.
+- Organize code into logical modules and folders.
+- Write code that is easy to read, test, and maintain.
+
+## Best Practices
+
+- Use `const` and `let` appropriately; avoid `var`.
+- Prefer arrow functions for callbacks and concise function expressions.
+- Use destructuring for objects and arrays to improve readability.
+- Avoid magic numbers and hardcoded values; use named constants.
+- Keep functions pure and side-effect free when possible.
+
+## Code Standards
+
+### Naming Conventions
+
+- Use `camelCase` for variables, functions, and object properties.
+- Use `PascalCase` for types, interfaces, classes, and enums.
+- Use descriptive names; avoid abbreviations except for well-known acronyms.
+- Prefix boolean variables with `is`, `has`, or `should` (e.g., `isActive`).
+
+### File Organization
+
+- Group related code in folders (e.g., `src/`, `tests/`, `lib/`).
+- Place one class, interface, or component per file when possible.
+- Name files using `kebab-case` (e.g., `user-service.ts`).
+- Keep test files close to the code they test (e.g., `src/foo.ts` and `tests/foo.test.ts`).
+
+### Formatting and Style
+
+- Use 2 spaces for indentation.
+- Limit lines to 120 characters.
+- Use single quotes for strings.
+- Always use semicolons.
+- Prefer trailing commas in multiline objects and arrays.
+- Use ESLint and Prettier for consistent formatting.
+
+## Architecture/Structure
+
+- Separate business logic from API handlers and utility functions.
+- Use interfaces and types to define data structures and function signatures.
+- Organize code by feature or domain when scaling projects.
+- Use dependency injection for testability and flexibility.
+
+## Common Patterns
+
+### Logging
+
+- Use a centralized logging utility or library.
+- Log errors, warnings, and important events with context.
+- Avoid logging sensitive information.
+- Example:
+
+    ```typescript
+    import { logger } from './utils/logger';
+
+    logger.info('Fetching user data', { userId });
+    logger.error('Failed to fetch user', { error });
+    ```
 
 ### Error Handling
-- Represent conditional outcomes using discriminated unions similar to `ParsedSpineResponse` in [`parseSpineResponse`](packages/clinicalView/src/parseSpineResponse.ts).
-- Return `[result, errors]` tuples for validators (pattern in `validateRequest` declaration).
 
-### Logging & Middleware
-- Instantiate `Logger` from `@aws-lambda-powertools/logger`; pass through layers/functions (see [`handler`](packages/clinicalView/src/handler.ts)).
-- For new handlers wrap with `middy` and apply existing middlewares: `injectLambdaContext`, `httpHeaderNormalizer`, `inputOutputLogger`, shared error handler.
+- Use `try/catch` for asynchronous code and error-prone operations.
+- Throw custom error types for domain-specific errors.
+- Always handle errors gracefully and provide meaningful messages.
+- Example:
 
-### FHIR Resource Construction
-- Use existing helper logic patterns in [`generateFhirResponse`](packages/clinicalView/src/generateFhirResponse.ts): derive `intent` from `INTENT_MAP`, map therapy/course codes from constants, conditionally include optional fields with object spread (`...(condition ? {field} : {})`).
-- Maintain consistent array wrapping for singular FHIR arrays (e.g. `coding: [{ ... }]`, `identifier: [{ ... }]`, `dosageInstruction: [{ text }]`).
+    ```typescript
+    try {
+      const result = await fetchData();
+    } catch (error) {
+      logger.error('Data fetch failed', { error });
+      throw new DataFetchError('Unable to fetch data');
+    }
+    ```
 
-### Extensions
-- Follow existing structure: `{ url, valueCoding }` or `{ url, extension: [...] }` (see [`extensions`](packages/clinicalView/src/schema/extensions.ts)).
-- Do not invent new URL namespaces; reuse `https://fhir.nhs.uk/...` patterns.
+### Type Safety
 
-### Testing
-- Snapshot-like expectations in tests should mirror object shape used in generation; keep field order stable to reduce churn (see tests in `tests/testGenerateFhirResponse.test.ts`).
+- Prefer interfaces and types over `any`.
+- Use type guards and assertions when necessary.
+- Example:
 
-### General TS Practices
-- Use `as const` for literal enums & maps to preserve string literal types.
-- Avoid `any`; prefer explicit interfaces or inferred types from schemas.
-- Prefer `Record<Key, Value>` for code/display maps (see `PRESCRIPTION_TYPE_MAP` etc.).
-- Use union narrowing via presence checks instead of optional chaining inside tight loops for performance-critical parsing.
+    ```typescript
+    interface User {
+      id: string;
+      name: string;
+    }
 
-### When Adding Code
-1. Add schema first (if new structure).
-2. Export type via `FromSchema`.
-3. Extend maps in `fhirMaps.ts` if introducing coded values.
-4. Update generator logic keeping ordering conventions.
-5. Add/adjust tests in `packages/clinicalView/tests/`.
-6. Ensure new exports are re-exported in index only if needed by other packages.
+    function isUser(obj: any): obj is User {
+      return typeof obj.id === 'string' && typeof obj.name === 'string';
+    }
+    ```
 
-### Avoid
-- Duplicating code system enums already defined.
-- Introducing default exports.
-- Hardcoding display text strings when a map exists.
-- Using mutable push patterns where direct literal construction is clearer.
+## Security
 
-### Example Pattern (New Simple Schema)
-```ts
-import {FromSchema, JSONSchema} from "json-schema-to-ts"
+- Validate and sanitize all external input.
+- Avoid exposing sensitive data in logs or error messages.
+- Use environment variables for secrets and configuration.
+- Keep dependencies up to date and audit regularly.
 
-export const exampleResource = {
-  type: "object",
-  properties: {
-    resourceType: {type: "string", enum: ["Example"]},
-    id: {type: "string"},
-    status: {type: "string", enum: ["active", "inactive"]}
-  },
-  required: ["resourceType", "id", "status"]
-} as const satisfies JSONSchema
+## Performance
 
-export type ExampleResourceType = FromSchema<typeof exampleResource>
-```
+- Minimize synchronous blocking operations.
+- Use async/await for asynchronous code.
+- Avoid unnecessary computations inside render or handler functions.
 
-Keep additions consistent with existing clinicalView module structure.
+## Testing
+
+- Write unit tests for all business logic.
+- Use Jest or similar frameworks for testing.
+- Mock external dependencies in tests.
+- Example test file structure:
+
+    ```
+    src/
+      handler.ts
+    tests/
+      handler.test.ts
+    ```
+
+## Examples and Code Snippets
+
+### Good Example
+
+    ```typescript
+    interface Prescription {
+      id: string;
+      medication: string;
+      issuedDate: Date;
+    }
+
+    function getPrescription(id: string): Prescription | null {
+      // Implementation
+    }
+    ```
+
+### Bad Example
+
+    ```typescript
+    function getPrescription(id) {
+      // No type safety, unclear return type
+    }
+    ```
+
+## Validation and Verification
+
+- Build: `npm run build`
+- Lint: `npm run lint`
+- Format: `npm run format`
+- Test: `npm test`
+
+## Maintenance
+
+- Review and update instructions as dependencies or frameworks change.
+- Update examples to reflect current best practices.
+- Remove deprecated patterns and add new ones as needed.
+- Ensure glob patterns match the intended files.
+
+## Additional Resources
+
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
+- [ESLint TypeScript Plugin](https://typescript-eslint.io/)
+- [Prettier Documentation](https://prettier.io/docs/en/options.html)
