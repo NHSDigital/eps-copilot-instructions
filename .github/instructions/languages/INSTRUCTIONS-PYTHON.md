@@ -1,73 +1,92 @@
-# Copilot Instructions for Python Files in `packages/slackBotFunction`
+---
+description: 'Guidelines for writing high-quality, maintainable python code with best practices for logging, error handling, code organization, naming, formatting, and style.'
+applyTo: '**/*.py'
+---
 
-## Purpose
-These instructions guide GitHub Copilot to generate high-quality, maintainable Python code, with modular architecture, service layers, and test coverage.
+# Python Copilot Instructions
 
-## General Guidelines
-- Use Python 3.9+ syntax and typing.
-- Follow PEP8 for formatting and naming conventions.
-- Prefer explicit imports and avoid wildcard imports.
-- Use docstrings for all public functions, classes, and modules.
-- Organize code into logical modules: `core`, `services`, `utils`.
-- Write modular, testable code with clear separation of concerns.
-- Use dependency injection for services and external integrations.
-- Handle exceptions gracefully and log errors using the standard `logging` module.
-- NEVER hardcode secrets or configuration; use environment variables or config files.
+These instructions are designed to guide GitHub Copilot in generating effective, maintainable, and domain-appropriate Python code. They are intended to be generic and applicable to a wide range of Python projects.
 
-## File/Folder Specific Instructions
-### `app/handler.py`
-- Main entry point for AWS Lambda handler.
-- Validate and parse incoming Slack events.
-- Delegate business logic to service or core modules.
-- Return AWS Lambda-compatible response objects.
+## 1. Code Organization & Structure
+- Organize code into logical modules and packages. Use directories such as `core/`, `services/`, `utils/` for separation of concerns.
+- Place entry points (e.g., `handler.py`) at the top level of the main package.
+- Use `__init__.py` files to define package boundaries and expose public APIs.
+- Group related functions and classes together. Avoid large monolithic files.
+- Store tests in a dedicated `tests/` directory, mirroring the structure of the main codebase.
 
-### `app/core/`
-- Implement core business logic and reusable components.
-- Avoid direct dependencies on Slack or AWS SDKs.
-- Write pure functions where possible.
+## 2. Naming Conventions
+- Use `snake_case` for function and variable names.
+- Use `PascalCase` for class names.
+- Prefix private functions and variables with a single underscore (`_`).
+- Name modules and packages using short, descriptive, lowercase names.
+- Use clear, descriptive names for all symbols. Avoid abbreviations unless they are widely understood.
 
-### `app/services/`
-- Integrate with external APIs (e.g., Bedrock, DynamoDB).
-- Use abstraction layers for AWS services.
+## 3. Formatting & Style
+- Follow [PEP 8](https://peps.python.org/pep-0008/) for code style and formatting.
+- Use 4 spaces per indentation level. Do not use tabs.
+- Limit lines to 120 characters.
+- Use blank lines to separate functions, classes, and logical sections.
+- Place imports at the top of each file, grouped by standard library, third-party, and local imports.
+- Use single quotes for strings unless double quotes are required.
+- Add docstrings to all public modules, classes, and functions. Use triple double quotes for docstrings.
+
+## 4. Logging Best Practices
+- Use the standard `logging` library for all logging.
+- Configure logging in the main entry point or via a dedicated utility module.
+- Use appropriate log levels: `debug`, `info`, `warning`, `error`, `critical`.
+- Avoid logging sensitive information.
+- Include contextual information in log messages (e.g., function names, parameters, error details).
+- Example:
+  ```python
+  import logging
+  logger = logging.getLogger(__name__)
+  logger.info('Processing event: %s', event)
+  ```
+
+## 5. Error Handling Best Practices
+- Use `try`/`except` blocks to handle exceptions gracefully.
+- Catch specific exceptions rather than using bare `except`.
+- Log exceptions with stack traces using `logger.exception()`.
+- Raise custom exceptions for domain-specific errors.
+- Validate inputs and fail fast with clear error messages.
+- Example:
+  ```python
+  try:
+      result = process_event(event)
+  except ValueError as e:
+      logger.error('Invalid event: %s', e)
+      raise
+  ```
+
+## 6. Testing Guidelines
+- Write unit tests for all public functions and classes.
+- Use `pytest` as the preferred testing framework.
+- Name test files and functions using `test_` prefix.
+- Use fixtures for setup and teardown.
 - Mock external dependencies in tests.
+- Ensure tests are isolated and repeatable.
 
-### `app/utils/`
-- Provide utility functions for common tasks (e.g., string manipulation, config loading).
-- Keep utilities stateless and reusable.
+## 7. Dependency Management
+- Use `pyproject.toml` to specify dependencies.
+- Never use `requirements.txt` to specify dependencies.
+- Pin versions for critical dependencies.
+- Avoid unnecessary dependencies.
 
-### `tests/`
-- Use `pytest` for all tests.
-- Name test files and functions descriptively (e.g., `test_handler_utils.py`, `test_forward_to_lambda`).
-- Mock AWS and Slack APIs using `pytest-mock` or `unittest.mock`.
-- Ensure coverage for error cases and edge conditions.
+## 8. Documentation
+- Document all public APIs with clear docstrings.
+- Use [Google](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) or [NumPy](https://numpydoc.readthedocs.io/en/latest/format.html) style for docstrings.
+- Provide usage examples in README files.
 
-## Best Practices
-- Use type hints and `Optional` where appropriate.
-- Prefer f-strings for string formatting.
-- Use context managers for resource handling.
-- Write unit tests for all new code and maintain high coverage.
-- Document public APIs and expected input/output formats.
-- Avoid global state; prefer passing dependencies explicitly.
+## 9. Security & Privacy
+- Do not log or expose secrets, credentials, or sensitive data.
+- Validate and sanitize all external inputs.
+- Use environment variables for configuration secrets.
 
-## Example Docstring
-"""
-Handles incoming Slack event and routes to appropriate service.
-Args:
-    event (dict): Slack event payload.
-    context (LambdaContext): AWS Lambda context object.
-Returns:
-    dict: AWS Lambda response object.
-Raises:
-    ValueError: If event payload is invalid.
-"""
-
-## Prohibited Patterns
-- No direct AWS credentials or secrets in code.
-- No print statements for logging (use `logging` instead).
-- No business logic in handler files; delegate to services/core.
-
-## References
-- [PEP8](https://peps.python.org/pep-0008/)
-- [pytest Documentation](https://docs.pytest.org/en/stable/)
+## 10. General Guidelines
+- Prefer readability and simplicity over cleverness.
+- Refactor duplicated code into reusable functions or classes.
+- Use type hints for function signatures and variables where appropriate.
+- Avoid global variables; use function arguments or class attributes.
 
 ---
+
