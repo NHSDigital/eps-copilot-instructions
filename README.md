@@ -1,4 +1,4 @@
-# EPS Copilot instructions
+# EPS Copilot Instructions
 
 This project contains copilot instruction files that can be copied to each EPS repo as an initial instructions.   
 
