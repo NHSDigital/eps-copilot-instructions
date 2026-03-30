@@ -5,11 +5,9 @@ inputs:
     description: "The ref to sync from the central repository"
     required: false
     default: "main"
-    type: string
   calling_repo_base_branch:
     description: "The base branch from the calling repository that should be merged into"
     required: false
-    type: string
     default: main
 runs:
   using: "composite"
