@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: create_pull_request
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
 
     steps:
