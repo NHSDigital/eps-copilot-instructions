@@ -5,9 +5,6 @@ on:
     schedule:
         - cron: "0 8 * * 3"
 
-env:
-    BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
-
 jobs:
     get_config_values:
         uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
@@ -40,6 +37,6 @@ jobs:
         with:
             dry_run: false
             pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
-            branch_name: ${{ github.event.pull_request.head.ref }}
+            branch_name: main
             tag_format: ${{ needs.get_config_values.outputs.tag_format }}
         secrets: inherit
