@@ -56,7 +56,6 @@ jobs:
     environment: create_pull_request
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
       - name: Sync shared instructions
