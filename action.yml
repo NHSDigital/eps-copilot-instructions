@@ -29,8 +29,8 @@ runs:
       with:
         ref: ${{ inputs.common_workflows_ref }}
         fetch-depth: 0
-        path: eps-common-workflows
-        repository: NHSDigital/eps-common-workflows
+        path: eps-copilot-instructions
+        repository: NHSDigital/eps-copilot-instructions
         sparse-checkout: |
           .github/instructions/general
           .github/instructions/languages
@@ -45,11 +45,11 @@ runs:
         rm -rf .github/copilot-instructions.md
         rm -rf .github/prompts
         mkdir -p .github/instructions/
-        cp -R eps-common-workflows/.github/instructions/general .github/instructions/general
-        cp -R eps-common-workflows/.github/instructions/languages .github/instructions/languages
-        cp eps-common-workflows/.github/copilot-instructions.md .github/copilot-instructions.md
-        cp -R eps-common-workflows/.github/prompts .github/prompts
-        rm -rf eps-common-workflows
+        cp -R eps-copilot-instructions/.github/instructions/general .github/instructions/general
+        cp -R eps-copilot-instructions/.github/instructions/languages .github/instructions/languages
+        cp eps-copilot-instructions/.github/copilot-instructions.md .github/copilot-instructions.md
+        cp -R eps-copilot-instructions/.github/prompts .github/prompts
+        rm -rf eps-copilot-instructions
 
     - name: Create GitHub App Token
       uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
