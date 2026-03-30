@@ -1,9 +1,9 @@
-name: pull_request
+name: release
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 8 * * 3"
+    workflow_dispatch:
+    schedule:
+        - cron: "0 8 * * 3"
 
 env:
     BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
