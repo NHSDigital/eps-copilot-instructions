@@ -1,6 +1,5 @@
-# SAM Template Instructions for GitHub Copilot
 ---
-description: 'Brief description of the instruction purpose and scope'
+description: 'Guidelines for writing, reviewing, and maintaining SAM templates'
 applyTo: 'SAMtemplates/**'
 ---
 ## Scope
@@ -28,7 +27,7 @@ This is a healthcare API service deployed using AWS SAM (Serverless Application 
 ### Standard Parameters
 Always include these common parameters in templates:
 ```yaml
-Parameters
+Parameters:
   StackName:
     Type: String
     Default: none
@@ -142,7 +141,7 @@ MutualTlsAuthentication:
 - Use managed policies from separate resource templates
 - Import cross-stack values: `!ImportValue account-resources:SpinePrivateKey`
 - Follow principle of least privilege
-- Include guard rules suppression only where necessary. By default these should not be added. If they are added an exlanation should be included to say why we are overriding them
+- Include guard rules suppression only where necessary. By default these should not be added. If they are added an explanation should be included to say why we are overriding them
 
 ### Environment Variables and Secrets
 ```yaml
@@ -188,8 +187,8 @@ Environment:
 5. **Resource Naming**: Consistent naming with stack prefix
 6. **Documentation**: Include meaningful descriptions for all resources
 7. **Guard Rules**: Suppress only when necessary and document reasons
-9. **Build Methods**: Use esbuild for Node.js Lambda functions
-10. **Version Pinning**: Pin Lambda layer versions and runtimes
+8. **Build Methods**: Use esbuild for Node.js Lambda functions
+9. **Version Pinning**: Pin Lambda layer versions and runtimes
 
 ### Common Import Values
 - `eps-route53-resources:EPS-domain`
