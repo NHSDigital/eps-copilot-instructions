@@ -55,8 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: create_pull_request
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
 
     steps:
       - name: Sync shared instructions
