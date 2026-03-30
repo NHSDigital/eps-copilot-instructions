@@ -14,7 +14,7 @@ This repository contains the shared GitHub Copilot instruction files used across
 The action is intended to be called from another repository. It:
 
 1. Checks out the calling repository at the requested base branch
-2. Checks out the central source repository at the requested ref
+2. Checks out copilot instruction files from copilot_instructions_ref repository at the requested ref
 3. Replaces the target repository's Copilot instruction files with the shared versions
 4. Creates a signed pull request containing the sync changes
 
@@ -35,7 +35,7 @@ Existing copies of those paths in the calling repository are removed before the 
 
 | Input | Required | Default | Description |
 | --- | --- | --- | --- |
-| `common_workflows_ref` | No | `main` | Git ref to check out from the central source repository |
+| `copilot_instructions_ref` | No | `main` | Git ref to check out from the eps-copilot-instructions repository |
 | `calling_repo_base_branch` | No | `main` | Base branch in the calling repository that the pull request should target |
 | `CREATE_PULL_REQUEST_APP_ID` | Yes | None | GitHub App ID used to generate a token for pull request creation |
 | `CREATE_PULL_REQUEST_PEM` | Yes | None | GitHub App private key in PEM format |
@@ -61,7 +61,7 @@ jobs:
       - name: Sync shared instructions
         uses: NHSDigital/eps-copilot-instructions@95118f6746ca7081258cc7f651dca1c5bb7339f1
         with:
-          common_workflows_ref: main
+          copilot_instructions_ref: main
           calling_repo_base_branch: main
           CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
           CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
