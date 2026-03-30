@@ -2,7 +2,7 @@ name: Sync Copilot Instructions
 description: "Syncs Copilot instructions from the repository to the GitHub Action's metadata file."
 inputs:
   copilot_instructions_ref:
-    description: "The ref to sync from the eps_copilot_instructions repository"
+    description: "The ref to sync from the eps-copilot-instructions repository"
     required: false
     default: "main"
   calling_repo_base_branch:
@@ -66,7 +66,7 @@ runs:
         title: "Upgrade: [dependabot] - sync Copilot instructions"
         body: |
           Syncing Copilot instructions from central repo.
-          Ref: `${{ inputs.common_workflows_ref }}`
+          Ref: `${{ inputs.copilot_instructions_ref }}`
         branch: copilot-instructions-sync
         base: ${{ inputs.calling_repo_base_branch }}
         branch-suffix: random
