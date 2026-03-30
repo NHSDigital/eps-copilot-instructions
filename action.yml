@@ -1,8 +1,8 @@
 name: Sync Copilot Instructions
 description: "Syncs Copilot instructions from the repository to the GitHub Action's metadata file."
 inputs:
-  common_workflows_ref:
-    description: "The ref to sync from the central repository"
+  copilot_instructions_ref:
+    description: "The ref to sync from the eps-copilot-instructions repository"
     required: false
     default: "main"
   calling_repo_base_branch:
@@ -27,7 +27,7 @@ runs:
     - name: Checkout central repo code
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       with:
-        ref: ${{ inputs.common_workflows_ref }}
+        ref: ${{ inputs.copilot_instructions_ref }}
         fetch-depth: 0
         path: eps-copilot-instructions
         repository: NHSDigital/eps-copilot-instructions
@@ -66,7 +66,7 @@ runs:
         title: "Upgrade: [dependabot] - sync Copilot instructions"
         body: |
           Syncing Copilot instructions from central repo.
-          Ref: `${{ inputs.common_workflows_ref }}`
+          Ref: `${{ inputs.copilot_instructions_ref }}`
         branch: copilot-instructions-sync
         base: ${{ inputs.calling_repo_base_branch }}
         branch-suffix: random
