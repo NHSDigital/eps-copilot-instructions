@@ -1,24 +1,15 @@
-name: pull_request
+name: release
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 8 * * 3"
-
-env:
-    BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+    workflow_dispatch:
+    schedule:
+        - cron: "0 8 * * 3"
 
 jobs:
     get_config_values:
         uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
         with:
             verify_published_from_main_image: false
-
-    dependabot-auto-approve-and-merge:
-        uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
-        secrets:
-            AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
-            AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
 
     quality_checks:
         uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
@@ -27,9 +18,6 @@ jobs:
             pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
         secrets:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    pr_title_format_check:
-        uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
 
     tag_release:
         needs: [get_config_values]
@@ -40,6 +28,6 @@ jobs:
         with:
             dry_run: false
             pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
-            branch_name: ${{ github.event.pull_request.head.ref }}
+            branch_name: main
             tag_format: ${{ needs.get_config_values.outputs.tag_format }}
         secrets: inherit
