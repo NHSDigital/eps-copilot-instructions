@@ -23,6 +23,7 @@ runs:
       with:
         ref: ${{ inputs.calling_repo_base_branch }}
         fetch-depth: 0
+        persist-credentials: false
 
     - name: Checkout central repo code
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -31,6 +32,7 @@ runs:
         fetch-depth: 0
         path: eps-copilot-instructions
         repository: NHSDigital/eps-copilot-instructions
+        persist-credentials: false
         sparse-checkout: |
           .github/instructions/general
           .github/instructions/languages
