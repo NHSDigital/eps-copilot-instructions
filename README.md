@@ -18,8 +18,6 @@ The action is intended to be called from another repository. It:
 3. Replaces the target repository's Copilot instruction files with the shared versions
 4. Creates a signed pull request containing the sync changes
 
-The action currently syncs content from `NHSDigital/eps-common-workflows`.
-
 ## Files synced by the action
 
 The action copies the following paths into the calling repository:
@@ -52,7 +50,7 @@ on:
 
 jobs:
   sync-copilot-instructions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     environment: create_pull_request
     permissions:
       contents: read
