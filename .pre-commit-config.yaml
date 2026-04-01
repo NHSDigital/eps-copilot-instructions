@@ -1,0 +1,91 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+        name: Check for merge conflict strings
+
+      - id: end-of-file-fixer
+        name: Fix missing newline at the end of files
+
+      - id: check-shebang-scripts-are-executable
+        name: Check shell scripts are executable
+        files: \.(sh)$
+
+      - id: check-yaml
+        name: Check pipelines configuration
+        files: ^(.github)
+
+  - repo: https://github.com/pycqa/flake8
+    rev: "7ef0350a439c93166bc8ba89fcc3de6a9a664e6c"
+    hooks:
+      - id: flake8
+
+  - repo: local
+    hooks:
+      - id: zizmor-action
+        name: Check action.yml
+        entry: zizmor
+        args: ["action.yml"]
+        language: system
+        files: action.yml
+        pass_filenames: false
+
+      - id: lint-githubactions
+        name: Lint github actions
+        entry: make
+        args: ["actionlint"]
+        language: system
+        files: ^.github
+        types_or: [yaml]
+        pass_filenames: false
+
+      - id: lint-githubaction-scripts
+        name: Lint github action scripts
+        entry: make
+        args: ["shellcheck"]
+        language: system
+        files: ^.github/scripts
+        types_or: [sh, shell]
+        pass_filenames: false
+
+      - id: check-commit-signing
+        name: Check commit signing
+        description: Ensures that commits are GPG signed
+        entry: bash
+        args:
+          - -c
+          - |
+            if ! git config --get user.signingkey > /dev/null 2>&1; then
+              echo "Error: Git signing key not configured."
+              echo "Please configure your GPG signing key with:"
+              echo "  git config user.signingkey <YOUR_GPG_KEY_ID>"
+              echo ""
+              echo "To find your GPG key ID, run: gpg --list-secret-keys --keyid-format=long"
+              echo "For more information, see: https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits"
+              exit 1
+            fi
+            if ! git config --get commit.gpgsign | grep -q "true" > /dev/null 2>&1; then
+              echo "Error: Commit signing is not enabled."
+              echo "Please enable commit signing with:"
+              echo "  git config commit.gpgsign true"
+              echo ""
+              echo "For more information, see: https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits"
+              exit 1
+            fi
+            echo "Commit signing is properly configured."
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: git-secrets
+        name: Git Secrets
+        description: git-secrets scans commits, commit messages, and --no-ff merges to prevent adding secrets into your git repositories.
+        entry: bash
+        args:
+          - -c
+          - "git-secrets --pre_commit_hook"
+        language: system
+
+fail_fast: true
+default_stages: [pre-commit]
