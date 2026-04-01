@@ -1,8 +1,11 @@
 .PHONY: install install-node compile lint test
-install:
-	echo "Nothing to install"
+install: install-node install-python install-hooks
 install-node:
 	echo "Nothing to install"
+install-python:
+	poetry install
+install-hooks: install-python
+	poetry run pre-commit install --install-hooks --overwrite
 compile:
 	echo "Nothing to compile"
 lint:

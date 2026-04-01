@@ -48,6 +48,8 @@ on:
   schedule:
     - cron: '0 6 * * 1'
 
+permissions: {}
+
 jobs:
   sync-copilot-instructions:
     runs-on: ubuntu-22.04

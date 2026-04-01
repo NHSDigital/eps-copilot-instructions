@@ -4,20 +4,31 @@ on:
     pull_request:
         branches: [main]
 
+permissions: {}
+
 jobs:
     get_config_values:
         uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
+        permissions:
+            attestations: "read"
+            contents: "read"
+            packages: "read"
         with:
             verify_published_from_main_image: false
 
     dependabot-auto-approve-and-merge:
         uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
+        permissions:
+            contents: "write"
+            pull-requests: "write"
         secrets:
             AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
             AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
 
     quality_checks:
         uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
+        permissions:
+            contents: "read"
         needs: [get_config_values]
         with:
             pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -26,7 +37,8 @@ jobs:
 
     pr_title_format_check:
         uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
-
+        permissions:
+            pull-requests: "write"
     tag_release:
         needs: [get_config_values]
         uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
