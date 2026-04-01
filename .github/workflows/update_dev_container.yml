@@ -1,0 +1,24 @@
+name: Update devcontainer version
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 6 * * 1"
+
+permissions: {}
+
+jobs:
+    update-devcontainer-version:
+        runs-on: ubuntu-22.04
+        environment: create_pull_request
+        permissions:
+            contents: read
+            packages: read
+
+        steps:
+            - name: Update devcontainer version
+              uses: NHSDigital/eps-update-devcontainer@95118f6746ca7081258cc7f651dca1c5bb7339f1
+              with:
+                  calling_repo_base_branch: main
+                  CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
+                  CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
