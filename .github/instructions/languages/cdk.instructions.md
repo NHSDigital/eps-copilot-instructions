@@ -88,11 +88,28 @@ export class CptsApiAppStack extends Stack {
 - Prefer VPC endpoints for private connectivity
 - Minimize resource creation in test environments
 
+## Unit Testing
+
+- Write unit tests for CDK stacks and constructs using synthesis-based assertions.
+- Prefer in-process tests that instantiate CDK `App` and `Stack` objects directly and assert on synthesized templates.
+- Keep assertions light-touch and stable, such as resource counts and a small number of important properties.
+- Use smoke tests for `bin/` entrypoints only to verify the app can be synthesized from its CLI wiring and environment configuration.
+- Avoid mocking AWS resources or writing tests that attempt to exercise live AWS behaviour.
+- CDK constructs suitable for reuse should be placed in `eps-cdk-utils` repo. 
+- Smaller CDK constructs may be included here and should have tests associated.
+- Do not test AWS implementation details owned by the CDK library. Test the resources and properties your code is responsible for declaring.
+
+### Recommended Test Styles
+
+- Smoke tests for `bin/` files: execute the entrypoint and assert that synthesis completes without throwing.
+- In-process synth tests for stacks and constructs: instantiate the stack directly and assert resource counts or key CloudFormation properties with `Template.fromStack(...)`.
+
 
 ## Validation and Verification
 
 - Build: `make cdk-synth`
 - Lint: `npm run lint --workspace packages/cdk`
+- Test: `npm test --workspace packages/cdk`
 
 ## Maintenance
 
