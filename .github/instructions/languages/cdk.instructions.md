@@ -93,7 +93,6 @@ export class CptsApiAppStack extends Stack {
 - Write unit tests for CDK stacks and constructs using synthesis-based assertions.
 - Prefer in-process tests that instantiate CDK `App` and `Stack` objects directly and assert on synthesized templates.
 - Keep assertions light-touch and stable, such as resource counts and a small number of important properties.
-- Use smoke tests for `bin/` entrypoints only to verify the app can be synthesized from its CLI wiring and environment configuration.
 - Avoid mocking AWS resources or writing tests that attempt to exercise live AWS behaviour.
 - CDK constructs suitable for reuse should be placed in `eps-cdk-utils` repo. 
 - Smaller CDK constructs may be included here and should have tests associated.
