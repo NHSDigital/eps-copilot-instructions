@@ -94,8 +94,8 @@ export class CptsApiAppStack extends Stack {
 - Prefer in-process tests that instantiate CDK `App` and `Stack` objects directly and assert on synthesized templates.
 - Keep assertions light-touch and stable, such as resource counts and a small number of important properties.
 - Avoid mocking AWS resources or writing tests that attempt to exercise live AWS behaviour.
-- CDK constructs suitable for reuse should be placed in `eps-cdk-utils` repo. 
-- Smaller CDK constructs may be included here and should have tests associated.
+- CDK constructs suitable for reuse should be placed in `eps-cdk-utils` repo.
+- Smaller CDK constructs may be included here and should have associated tests.
 - Do not test AWS implementation details owned by the CDK library. Test the resources and properties your code is responsible for declaring.
 
 ### Recommended Test Styles
