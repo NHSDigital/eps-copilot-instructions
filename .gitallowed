@@ -1,7 +1,0 @@
-id-token: write
-password: \${{secrets\.GITHUB_TOKEN}}
-token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
-github-token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
-token: ?"?\$\{\{\s*secrets\.DEPENDABOT_TOKEN\s*\}\}"?
-\.gitallowed
-id-token: "write"
