@@ -78,7 +78,7 @@ repos:
         pass_filenames: false
         always_run: true
 
-      - id: gitleasks
+      - id: gitleaks
         name: Git Leaks
         description: gitleaks scans commits, commit messages, and --no-ff merges to
           prevent adding secrets into your git repositories.
