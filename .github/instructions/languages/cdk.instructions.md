@@ -23,6 +23,7 @@ This file provides instructions for generating, reviewing, and maintaining AWS C
 - Suppress warnings with `nagSuppressions.ts` only when justified and documented
 - Use `bin/` for entrypoint apps, `constructs/` for reusable components, and `stacks/` for stack definitions
 - Prefer `props` interfaces for construct configuration
+- For Step Functions definitions, prefer a chain-centric style where states are defined inline within `Chain.start(...).next(...)` so the execution flow reads top-to-bottom in one place. Avoid mixing a chain with many separately declared state `const`s instead embedding calls to helper functions in the chain.
 
 ## Code Standards
 
