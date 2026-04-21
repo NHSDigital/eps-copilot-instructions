@@ -9,7 +9,7 @@ permissions: {}
 
 jobs:
     get_config_values:
-        uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
+        uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@8b259f4f2d2b8ff1345fb0d2f9b9f0fbb9d19845
         permissions:
             attestations: "read"
             contents: "read"
@@ -18,21 +18,24 @@ jobs:
             verify_published_from_main_image: false
 
     quality_checks:
-        uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
-        needs: [get_config_values]
+        uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@8b259f4f2d2b8ff1345fb0d2f9b9f0fbb9d19845
+        needs: [ get_config_values ]
         permissions:
             contents: "read"
+            packages: "read"
+            id-token: "write"
         with:
             pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
         secrets:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     tag_release:
-        needs: [get_config_values]
-        uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@f3d19a678a725917a5c59cae4d76db621bb7c9c7
+        needs: [ get_config_values ]
+        uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@8b259f4f2d2b8ff1345fb0d2f9b9f0fbb9d19845
         permissions:
             id-token: "write"
             contents: "write"
+            packages: "write"
         with:
             dry_run: false
             pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
