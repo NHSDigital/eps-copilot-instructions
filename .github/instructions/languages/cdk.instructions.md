@@ -26,6 +26,37 @@ This file provides instructions for generating, reviewing, and maintaining AWS C
 - For Step Functions definitions, prefer a chain-centric style where states are defined inline within `Chain.start(...).next(...)` so the execution flow reads top-to-bottom in one place. Avoid mixing a chain with many separately declared state `const`s; instead embed calls to helper functions directly in the chain when needed.
 - For Step Functions chain formatting, place `.start`, `.next`, `.when`, and `.otherwise` on their own lines, and give helper calls such as `.jsonata(...)` the same line-break weight so nested flow blocks are visually aligned and easy to scan.
 - For construct props that group resources (for example lambda functions or state machines), prefer explicit named object shapes (e.g. `{status: TypescriptLambdaFunction}`) over generic index signatures or broad maps so consumers are strongly typed to only the supported resources.
+- For construct props that consume grouped resources, prefer inline explicit object shapes in the props contract (for example `functions: { status: TypescriptLambdaFunction }`) over `Pick<...>` or generic map types.
+
+### Good Example - Inline Explicit Shape
+
+```typescript
+interface ApisProps {
+  readonly functions: {
+    readonly status: TypescriptLambdaFunction
+  }
+  readonly stateMachines: {
+    readonly getMyPrescriptions: ExpressStateMachine
+  }
+}
+```
+
+### Bad Example - Hidden Contract via Pick
+
+```typescript
+interface ApisProps {
+  readonly functions: Pick<FunctionResources, "status" | "capabilityStatement">
+}
+```
+
+### Bad Example - Generic Map
+
+```typescript
+interface ApisProps {
+  functions: {[key: string]: TypescriptLambdaFunction}
+  stateMachines: {[key: string]: ExpressStateMachine}
+}
+```
 
 ## Code Standards
 
@@ -36,6 +67,7 @@ This file provides instructions for generating, reviewing, and maintaining AWS C
 - Variables: camelCase
 - Stacks: Suffix with `Stack` (e.g., `CptsApiAppStack`)
 - Entry points: Suffix with `App` (e.g., `CptsApiApp.ts`)
+- CDK app entry points must follow `<app acronym><Api|Ui>[Sandbox]App` naming (e.g., `PsuApiApp`, `PsuApiSandboxApp`)
 
 ### File Organization
 
