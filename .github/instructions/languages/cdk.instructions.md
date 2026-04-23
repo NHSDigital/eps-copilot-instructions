@@ -23,7 +23,9 @@ This file provides instructions for generating, reviewing, and maintaining AWS C
 - Suppress warnings with `nagSuppressions.ts` only when justified and documented
 - Use `bin/` for entrypoint apps, `constructs/` for reusable components, and `stacks/` for stack definitions
 - Prefer `props` interfaces for construct configuration
-- For Step Functions definitions, prefer a chain-centric style where states are defined inline within `Chain.start(...).next(...)` so the execution flow reads top-to-bottom in one place. Avoid mixing a chain with many separately declared state `const`s instead embedding calls to helper functions in the chain.
+- For Step Functions definitions, prefer a chain-centric style where states are defined inline within `Chain.start(...).next(...)` so the execution flow reads top-to-bottom in one place. Avoid mixing a chain with many separately declared state `const`s; instead embed calls to helper functions directly in the chain when needed.
+- For Step Functions chain formatting, place `.start`, `.next`, `.when`, and `.otherwise` on their own lines, and give helper calls such as `.jsonata(...)` the same line-break weight so nested flow blocks are visually aligned and easy to scan.
+- For construct props that group resources (for example lambda functions or state machines), prefer explicit named object shapes (e.g. `{status: TypescriptLambdaFunction}`) over generic index signatures or broad maps so consumers are strongly typed to only the supported resources.
 
 ## Code Standards
 
